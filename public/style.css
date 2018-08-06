@@ -1,0 +1,54 @@
+body, html {
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    background: #dfdfdf;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    width: 720px;
+    height: 430px;
+    background-color: white;
+    box-shadow: 0 0 15px #00000020;
+    padding: 10px 10px;
+
+    display: grid;
+    grid-template-rows: 70px 1fr 40px;
+}
+
+.header {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+}
+
+.nickname-box{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+}
+
+#nickname-text{
+    height: 20%;
+}
+
+textarea {
+    display: block;
+    height: 92%;
+}
+
+.chat-box {
+    display: grid;
+    grid-template-columns: 90% 10%;
+}
+
+#message-text {
+    display: block;
+}
+
+
+button {
+    display: block;
+}
