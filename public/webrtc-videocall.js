@@ -1,6 +1,7 @@
 var callerVideoPlayer = $('#caller-video');
 var calleeVideoPlayer = $('#callee-video');
 
+
 var callerVideoStream;
 var calleeVideoStream;
 
@@ -10,6 +11,9 @@ socket.on('gotvideocallrequest', function (fromUserID) {
 });
 
 function RequestVideoCall(toUserID) {
+    $(videocallPanel).css('display', 'grid');
+    $(chatPanel).css('display', 'none');
+
     console.log(`Video Call request to ${toUserID} `);
     CloseMessenger();
     socket.emit('newvideocallrequest', toUserID, userID);
@@ -27,7 +31,8 @@ function RequestVideoCall(toUserID) {
             callerVideoStream.getTracks().forEach(
                 track => {
                     RTCConnection.addTrack(track, callerVideoStream);
-                });
+                }
+            );
 
             socket.on('goticecandidate', function (candidate) {
                 if (candidate) {
@@ -37,6 +42,11 @@ function RequestVideoCall(toUserID) {
 
             RTCConnection.onicecandidate = function (event) {
                 socket.emit('seticecandidate', toUserID, event.candidate);
+            }
+
+            RTCConnection.ontrack = function (event) {
+                console.log('OKKKKKK')
+                $(calleeVideoPlayer).prop('srcObject', event.streams[0]);
             }
 
             RTCConnection.createOffer({
@@ -78,10 +88,26 @@ function ResponseVideoCall(fromUserID) {
     socket.on('gotoffer', function (desc, fromUserID) {
         RTCConnection.setRemoteDescription(desc);
 
-        RTCConnection.createAnswer().then(
-            function (desc) {
-                RTCConnection.setLocalDescription(desc);
-                socket.emit('createanswer', fromUserID, desc);
+        navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true
+        }).then(
+            function (mediaStream) {
+                $(callerVideoPlayer).prop('srcObject', mediaStream);
+
+                calleeMediaStream = mediaStream;
+                calleeMediaStream.getTracks().forEach(
+                    track => {
+                        RTCConnection.addTrack(track, calleeMediaStream);
+                    }
+                );
+
+                RTCConnection.createAnswer().then(
+                    function (desc) {
+                        RTCConnection.setLocalDescription(desc);
+                        socket.emit('createanswer', fromUserID, desc);
+                    }
+                );
             }
         );
     })
@@ -91,8 +117,9 @@ function CloseVideoCall() {
     console.log('CLose')
     RTCConnection.close();
     RTCConnection = null;
-    
+
     callerVideoStream.getTracks().forEach(track => { track.stop() });
+    calleeVideoStream.getTracks().forEach(track => { track.stop() });
 
     $(callerVideoStream).prop('srcObject', null);
     $(calleeVideoStream).prop('srcObject', null);

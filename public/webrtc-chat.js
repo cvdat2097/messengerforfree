@@ -1,10 +1,13 @@
 var socket = io();
 
+var videocallPanel = $('.videocall-container');
+var chatPanel = $('.chat-container');
+
 messageText = $('#message-text');
 conversationBox = $('#conversation-box');
 userList = $('#online-users ul');
 nicknameText = $('#nickname-text');
-remoteNicknameText = $('#remote-nickname-text');
+remoteNicknameText = $('.remote-nickname-text');
 
 var nickname = 'Dat';
 var userID = '';
@@ -37,11 +40,12 @@ socket.on('newuseronline', function (onlineUsers) {
             $(userList).append(
                 `<li id="user-${user.nickname.replace(/[\s]/g, "")}">
                     <div>
-                    <a href="#" onclick="RequestMessenger('${user.id}')">${user.nickname}</a>
+                    <p>${user.nickname} </p>
                     <span class="online-dot"></span>
                     </div>
                     <div>
-                    <a href="#" onclick="RequestVideoCall('${user.id}')"><i class="material-icons small">video_call</i></a>
+                    <i class="material-icons action-link" onclick="RequestMessenger('${user.id}')" style="color: rgb(0, 189, 0)">chat_bubble</i>
+                    <i class="material-icons action-link" onclick="RequestVideoCall('${user.id}')" style="color: dodgerblue">voice_chat</i>
                     </div>
                 </li>`
             );
@@ -69,6 +73,9 @@ socket.on('connectionestablished', function (chatWithNickname) {
 
 function RequestMessenger(toUserID) {
     CloseMessenger();
+    $(videocallPanel).css('display', 'none');
+    $(chatPanel).css('display', 'grid');
+
     console.log(`Start messaging with: ${toUserID}`);
     socket.emit('newmessagingrequest', toUserID, userID);
 
@@ -191,4 +198,14 @@ function AppendMessage(msg, fromSender = false, isNotification = false) {
         );
     }
     $(conversationBox).scrollTop(1000);
+}
+
+function SelectMode(mode) {
+    if (mode === 'chat') {
+        $(videocallPanel).css('display', 'none');
+        $(chatPanel).css('display', 'grid');
+    } else if (mode === 'videocall') {
+        $(videocallPanel).css('display', 'grid');
+        $(chatPanel).css('display', 'none');
+    }
 }

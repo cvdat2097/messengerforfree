@@ -8,6 +8,10 @@
     grid-template-rows: 10% 1fr 15%;
 }
 
+.videocall-container .header {
+    padding: 0 2%;
+}
+
 #video-conversation-box {
     grid-row: 2;
     display: flex;
@@ -24,14 +28,17 @@ video {
 
 #callee-video {
     border: 1px green solid;
-    width: 100%;
+    width: 99%;
+    max-width: 99%;
     height: 100%;
+    max-height: 100%;
     overflow: hidden;
 }
 
 #caller-video {
     overflow: hidden;
     max-width: 30%;
+    max-height: 30%;
     position: absolute;
     top: 10px;
     left: 10px;

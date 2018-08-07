@@ -3,7 +3,10 @@
 
 <head>
   <title>Messenger</title>
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Merienda:700" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="chat-style.css">
   <link rel="stylesheet" href="videocall-style.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
@@ -14,17 +17,24 @@
     <!-- MENU -->
     <div class="menu-container">
       <h1>Messenger</h1>
+
       <p id="nickname-text"></p>
+
       <div id="online-users">
-        <span>Online user: </span>
+        <span>Online user </span>
         <ul></ul>
+      </div>
+
+      <div id="mode-selection">
+        <button class="mode-btn green-btn" onclick="SelectMode('chat')"><i class="material-icons">message</i></button>
+        <button class="mode-btn" onclick="SelectMode('videocall')"><i class="material-icons">videocam</i></button>
       </div>
     </div>
 
     <!-- CHAT ROOM -->
     <div class="chat-container" style="display: none">
       <div class="header">
-        <h2 id="remote-nickname-text"></h2>
+        <h2 class="remote-nickname-text"></h2>
       </div>
       <div id="conversation-box">
       </div>
@@ -37,7 +47,7 @@
     <!-- VIDEOCALL ROOM -->
     <div class="videocall-container">
       <div class="header">
-        <h2 id="remote-nickname-text"></h2>
+        <h2 class="remote-nickname-text"></h2>
       </div>
       <div id="video-conversation-box">
         <video id="callee-video" controls playinline autoplay></video>
