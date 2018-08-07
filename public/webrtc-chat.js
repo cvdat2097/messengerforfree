@@ -4,35 +4,32 @@ messageText = $('#message-text');
 conversatinBox = $('#conversation-box');
 userList = $('#online-users ul');
 nicknameText = $('#nickname-text');
-remoteNicknameText = $('#remote-nickname');
+remoteNicknameText = $('#remote-nickname-text');
 
-// Ask for nickname
 var nickname = '';
 var userID = '';
 var RTCConnection;
 var MessagingChannel;
 
+// Ask for nickname
 while (!nickname) {
     nickname = prompt('What is your name?', 'MHX');
 }
 socket.emit('enternickname', nickname);
 $(nicknameText).text('Hello, ' + nickname)
 
-socket.on('generateuserid', function (id) {
-    userID = id;
+// Get UserID of the current browser session
+socket.on('generateuserid', function (newUserID) {
+    userID = newUserID;
     console.log(userID);
 });
 
-
-socket.on('receivemessage', function (content) {
-    AppendMessage(content.nickname + ': ' + content.message);
-});
-
+// Notify all people
 socket.on('userjoined', function (nickname) {
     AppendMessage(`<${nickname}> is online!`);
-
 });
 
+// Update online list
 socket.on('newuseronline', function (onlineUsers) {
     $(userList).empty();
     for (var user of onlineUsers) {
@@ -42,24 +39,26 @@ socket.on('newuseronline', function (onlineUsers) {
     }
 });
 
+// Notify all people
 socket.on('userleaved', function (nickname) {
     AppendMessage(`<${nickname}> disconnected.`);
     nickname = nickname.replace(/[\s]/g, "");
     $(`#user-${nickname}`).remove();
 });
 
-socket.on('gotmessagingrequest', function (userID) {
-    console.log(`Got messaging request from ${userID}`);
-    ResponseMessenger(userID);
+socket.on('gotmessagingrequest', function (fromUserID) {
+    console.log(`Got messaging request from ${fromUserID}`);
+    ResponseMessenger(fromUserID);
 });
 
-socket.on('connectionestablished', function () {
+socket.on('connectionestablished', function (chatWithNickname) {
     $(messageText).prop('disabled', false).focus();
+    $(remoteNicknameText).text(chatWithNickname);
 })
 
-function RequestMessenger(remoteID) {
-    console.log(`Start messaging with: ${remoteID}`);
-    socket.emit('newmessagingrequest', remoteID, userID);
+function RequestMessenger(toUserID) {
+    console.log(`Start messaging with: ${toUserID}`);
+    socket.emit('newmessagingrequest', toUserID, userID);
 
     RTCConnection = new RTCPeerConnection();
 
@@ -70,7 +69,7 @@ function RequestMessenger(remoteID) {
     });
 
     RTCConnection.onicecandidate = function (event) {
-        socket.emit('seticecandidate', remoteID, event.candidate);
+        socket.emit('seticecandidate', toUserID, event.candidate);
     }
 
     MessagingChannel = RTCConnection.createDataChannel('messaging');
@@ -82,22 +81,22 @@ function RequestMessenger(remoteID) {
     RTCConnection.createOffer().then(
         function (desc) {
             RTCConnection.setLocalDescription(desc);
-            socket.emit('createoffer', remoteID, desc);
+            socket.emit('createoffer', toUserID, desc);
 
             socket.on('gotanswer', function (desc) {
                 if (desc) {
                     RTCConnection.setRemoteDescription(desc);
-                    socket.emit('connectionestablished', remoteID, userID);
+                    socket.emit('connectionestablished', toUserID, userID);
                 }
             })
         }
     );
 }
 
-function ResponseMessenger(localID) {
+function ResponseMessenger(fromUserID) {
     RTCConnection = new RTCPeerConnection();
     RTCConnection.onicecandidate = function (event) {
-        socket.emit('seticecandidate', localID, event.candidate);
+        socket.emit('seticecandidate', fromUserID, event.candidate);
     }
 
     socket.on('goticecandidate', function (candidate) {

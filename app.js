@@ -7,7 +7,6 @@ const helper = require('./lib/helper');
 // Data
 var onlineUsers = [];
 var onlineSockets = {};
-var xx;
 
 app.use(express.static('public'));
 
@@ -20,7 +19,7 @@ io.on('connection', function (socket) {
     socket.emit('generateuserid', userID);
 
     socket.on('enternickname', function (nickname) {
-        io.in('chatroom').emit('userjoined', nickname);
+        socket.to('chatroom').emit('userjoined', nickname);
 
         onlineUsers.push({
             id: userID,
@@ -35,33 +34,36 @@ io.on('connection', function (socket) {
             onlineUsers = onlineUsers.filter(function (user) {
                 return user.id != userID;
             });
-            io.in('chatroom').emit('userleaved', nickname);
+            socket.to('chatroom').emit('userleaved', nickname);
         });
     });
 
-    socket.on('newmessagingrequest', function (remoteID, UserID) {
-        if (onlineSockets[remoteID]) {
-            onlineSockets[remoteID].emit('gotmessagingrequest', UserID);
+    socket.on('newmessagingrequest', function (toUserID, fromUserID) {
+        if (onlineSockets[toUserID]) {
+            onlineSockets[toUserID].emit('gotmessagingrequest', fromUserID);
         }
     });
 
-    socket.on('seticecandidate', function (remoteID, candidate) {
-        onlineSockets[remoteID].emit('goticecandidate', candidate);
+    socket.on('seticecandidate', function (toUserID, IceCandidate) {
+        onlineSockets[toUserID].emit('goticecandidate', IceCandidate);
     });
 
-    socket.on('createoffer', function (remoteID, desc) {
-        onlineSockets[remoteID].emit('gotoffer', desc, userID);
+    socket.on('createoffer', function (toUserID, desc) {
+        onlineSockets[toUserID].emit('gotoffer', desc, userID);
     });
 
-    socket.on('createanswer', function (remoteID, desc) {
-        onlineSockets[remoteID].emit('gotanswer', desc);
+    socket.on('createanswer', function (toUserID, desc) {
+        onlineSockets[toUserID].emit('gotanswer', desc);
     });
 
     socket.on('connectionestablished', function (remoteID, userID) {
-        onlineSockets[remoteID].emit('connectionestablished');
-        onlineSockets[userID].emit('connectionestablished');
-    })
-
+        onlineSockets[remoteID].emit('connectionestablished', onlineUsers
+            .filter(function (user) { return user.id == userID; })[0]
+            .nickname);
+        onlineSockets[userID].emit('connectionestablished', onlineUsers
+            .filter(function (user) { return user.id == remoteID; })[0]
+            .nickname);
+    });
 });
 
 
@@ -71,4 +73,4 @@ http.listen(process.env.PORT || 3000, function (err) {
     } else {
         console.log(err);
     }
-})
+});
