@@ -7,25 +7,23 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="char-container">
     <div class="header">
       <h1>Messenger</h1>
       <div class="nickname-box">
-        <input id="nickname-text" type="text" placeholder="nickname" value="Socket.io">
-        <button id="nickname-btn">Go</button>
+        <p id="nickname-text"></p>
       </div>
     </div>
     <textarea id="conversation-box" disabled style="background-color: white"></textarea>
     <div class="chat-box">
-      <input id="message-text" type="text" placeholder="Message"  onkeydown="SendMessage(event)">
+      <input id="message-text" type="text" placeholder="Message" onkeydown="SendMessage(event)">
       <button onclick="SendMessage(event)">Send</button>
     </div>
   </div>
 
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+    crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
-  <script>
-    var socket = io();
-  </script>
   <script src="script.js"></script>
 </body>
 

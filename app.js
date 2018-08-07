@@ -3,6 +3,8 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+
+
 app.use(express.static('public'));
 
 
@@ -10,12 +12,17 @@ io.on('connection', function (socket) {
     console.log('a user connected');
     socket.join('chatroom');
 
-    socket.on('disconnect', function () {
-        console.log('user disconnected');
-    });
+    socket.on('enternickname', function (nickname) {
+        io.in('chatroom').emit('userjoined', nickname);
+        
+        socket.on('disconnect', function () {
+            console.log('user disconnected');
+            io.in('chatroom').emit('userleaved', nickname);
+        });
+    })    
 
     socket.on('sendmessage', function (message, nickname) {
-        io.in('chatroom').emit('receivemessage', {
+        socket.to('chatroom').emit('receivemessage', {
             message: message,
             nickname: nickname
         })

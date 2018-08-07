@@ -7,7 +7,7 @@ body, html {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.container {
+.char-container {
     width: 720px;
     height: 430px;
     background-color: white;
@@ -32,11 +32,13 @@ body, html {
 
 #nickname-text{
     height: 20%;
+    width: 100%;
 }
 
 textarea {
     display: block;
     height: 92%;
+    resize: none;
 }
 
 .chat-box {
