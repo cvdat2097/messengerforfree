@@ -6,7 +6,7 @@ userList = $('#online-users ul');
 nicknameText = $('#nickname-text');
 remoteNicknameText = $('#remote-nickname-text');
 
-var nickname = 'Dat';
+var nickname = '';
 var userID = '';
 var RTCConnection;
 var MessagingChannel;
