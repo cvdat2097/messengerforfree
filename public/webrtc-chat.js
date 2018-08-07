@@ -16,7 +16,7 @@ while (!nickname) {
     nickname = prompt('What is your name?', 'MHX');
 }
 socket.emit('enternickname', nickname);
-$(nicknameText).text('Hello, ' + nickname)
+$(nicknameText).append(`Hello, <b><i>${nickname}</i></b>.`)
 
 // Get UserID of the current browser session
 socket.on('generateuserid', function (newUserID) {
@@ -179,4 +179,5 @@ function AppendMessage(msg, fromSender = false, isNotification = false) {
             </div>`
         );
     }
+    $(conversationBox).scrollTop(1000);
 }
