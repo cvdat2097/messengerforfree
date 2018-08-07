@@ -6,7 +6,7 @@ userList = $('#online-users ul');
 nicknameText = $('#nickname-text');
 remoteNicknameText = $('#remote-nickname-text');
 
-var nickname = '';
+var nickname = 'Dat';
 var userID = '';
 var RTCConnection;
 var MessagingChannel;
@@ -36,10 +36,12 @@ socket.on('newuseronline', function (onlineUsers) {
         if (user.id != userID) {
             $(userList).append(
                 `<li id="user-${user.nickname.replace(/[\s]/g, "")}">
-                    <a href="#" onclick="RequestMessenger('${user.id}')">${user.nickname}</a>
                     <div>
-                    <a href="#"><i class="material-icons small">call</i></a>
-                    <a href="#"><i class="material-icons small">video_call</i></a>
+                    <a href="#" onclick="RequestMessenger('${user.id}')">${user.nickname}</a>
+                    <span class="online-dot"></span>
+                    </div>
+                    <div>
+                    <a href="#" onclick="RequestVideoCall('${user.id}')"><i class="material-icons small">video_call</i></a>
                     </div>
                 </li>`
             );
@@ -62,6 +64,7 @@ socket.on('gotmessagingrequest', function (fromUserID) {
 socket.on('connectionestablished', function (chatWithNickname) {
     $(messageText).prop('disabled', false).focus();
     $(remoteNicknameText).text(chatWithNickname);
+    console.log('Success')
 });
 
 function RequestMessenger(toUserID) {

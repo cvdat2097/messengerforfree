@@ -43,6 +43,11 @@ io.on('connection', function (socket) {
             onlineSockets[toUserID].emit('gotmessagingrequest', fromUserID);
         }
     });
+    socket.on('newvideocallrequest', function (toUserID, fromUserID) {
+        if (onlineSockets[toUserID]) {
+            onlineSockets[toUserID].emit('gotvideocallrequest', fromUserID);
+        }
+    });
 
     socket.on('seticecandidate', function (toUserID, IceCandidate) {
         onlineSockets[toUserID].emit('goticecandidate', IceCandidate);

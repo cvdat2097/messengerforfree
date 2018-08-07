@@ -4,6 +4,7 @@
 <head>
   <title>Messenger</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="videocall-style.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
@@ -21,7 +22,7 @@
     </div>
 
     <!-- CHAT ROOM -->
-    <div class="chat-container">
+    <div class="chat-container" style="display: none">
       <div class="header">
         <h2 id="remote-nickname-text"></h2>
       </div>
@@ -32,12 +33,27 @@
         <button onclick="SendMessage(event)"><i class="material-icons">send</i></button>
       </div>
     </div>
+
+    <!-- VIDEOCALL ROOM -->
+    <div class="videocall-container">
+      <div class="header">
+        <h2 id="remote-nickname-text"></h2>
+      </div>
+      <div id="video-conversation-box">
+        <video id="callee-video" controls playinline autoplay></video>
+        <video id="caller-video" controls playinline autoplay></video>
+      </div>
+      <div id="video-controls">
+          <button onclick="CloseVideoCall()" class="call-end-btn red-btn"><i style="font-size: xx-large" class="material-icons">call_end</i></button>
+      </div>
+    </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
     crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
   <script src="webrtc-chat.js"></script>
+  <script src="webrtc-videocall.js"></script>
 </body>
 
 </html>
