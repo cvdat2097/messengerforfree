@@ -7,24 +7,39 @@
 </head>
 
 <body>
-  <div class="char-container">
-    <div class="header">
-      <h1>Messenger</h1>
-      <div class="nickname-box">
-        <p id="nickname-text"></p>
+  <div class="wrapper">
+
+    <!-- MENU -->
+    <div class="menu-container">
+        <h1>Messenger</h1>
+        <p id="nickname-text">Hello, ABC</p>
+        <div id="online-users">
+          <span>Online user: </span>
+          <ul>
+          </ul>
+        </div>
+    </div>
+
+    <!-- CHAT ROOM -->
+    <div class="chat-container">
+      <div class="header">
+        <div class="#remote-nickname">
+          
+        </div>
+      </div>
+      <textarea id="conversation-box" disabled style="background-color: white"></textarea>
+      <div class="chat-box">
+        <input id="message-text" type="text" placeholder="Message" onkeydown="SendMessage(event)" disabled>
+        <button onclick="SendMessage(event)">Send</button>
       </div>
     </div>
-    <textarea id="conversation-box" disabled style="background-color: white"></textarea>
-    <div class="chat-box">
-      <input id="message-text" type="text" placeholder="Message" onkeydown="SendMessage(event)">
-      <button onclick="SendMessage(event)">Send</button>
-    </div>
+
   </div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
     crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.dev.js"></script>
-  <script src="script.js"></script>
+  <script src="webrtc-chat.js"></script>
 </body>
 
 </html>

@@ -1,56 +1,105 @@
 body, html {
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    display: flex;
+    height: 100vh;
+    width: 100vw;
     background: #dfdfdf;
+    margin: 0;
+    padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.char-container {
-    width: 720px;
-    height: 430px;
-    background-color: white;
-    box-shadow: 0 0 15px #00000020;
-    padding: 10px 10px;
+.wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
 
+/* MENU */
+.menu-container {
+    flex-basis: 20%;
+    max-width: 200px;
+    box-sizing: border-box;
+    padding: 1%;
+
+}
+
+#online-users ul {
+    color: #00d532;
+}
+
+#online-users ul li a {
+    text-decoration: none;
+}
+
+/* CHAT */
+.chat-container {
+    flex-grow: 1;
+    width: 96%;
+    height: 100%;
+    padding: 1% 2%;
+    box-sizing: border-box;
+    margin: 0;
+    bottom: 0;
+    top: 0;
+    background-color: white;
     display: grid;
-    grid-template-rows: 70px 1fr 40px;
+    grid-template-rows: 10% 1fr 8%;
+    box-shadow: 0 0 10px #00000020;
 }
 
 .header {
-    display: grid;
-    grid-template-columns: 1fr 200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.nickname-box{
+.header h1 {
+    margin: 0;
+    font-size: 6vh;
+}
+
+.nickname-box {
     display: flex;
     justify-content: space-around;
     align-items: center;
     height: 100%;
 }
 
-#nickname-text{
-    height: 20%;
+#nickname-text {
     width: 100%;
+    text-align: left;
+    font-size: 2.3vh
 }
 
 textarea {
     display: block;
-    height: 92%;
+    width: 100%;
+    height: 97%;
     resize: none;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: 2.5vh;
+    box-sizing: border-box;
 }
 
 .chat-box {
-    display: grid;
-    grid-template-columns: 90% 10%;
+    display: flex;
+    font-size: 2.4vh;
 }
 
 #message-text {
     display: block;
+    flex-grow: 1;
+    font-size: 2.4vh;
 }
 
-
 button {
+    flex-basis: 10%;
+    max-width: 120px;
     display: block;
+    font-size: 2.4vh;
 }
