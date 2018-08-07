@@ -1,21 +1,48 @@
+button {
+    background-color: white;
+    border: none;    
+    text-decoration: none;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+    box-sizing: border-box;
+    border: 1px solid dodgerblue;
+}
+button:hover {
+    background-color: dodgerblue;
+    color: white;
+}
+
+button * {
+    color: dodgerblue;
+}
+
+button:hover * {
+    color: white;
+}
+
 /* width */
+
 ::-webkit-scrollbar {
     width: 4px;
 }
 
 /* Track */
+
 ::-webkit-scrollbar-track {
-    background: transparent; 
+    background: transparent;
 }
- 
+
 /* Handle */
+
 ::-webkit-scrollbar-thumb {
-    background: rgba(136, 136, 136, 0.517); 
+    background: rgba(136, 136, 136, 0.517);
 }
 
 /* Handle on hover */
+
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(85, 85, 85, 0.51); 
+    background: rgba(85, 85, 85, 0.51);
 }
 
 body, html {
@@ -39,25 +66,30 @@ body, html {
 }
 
 /* MENU */
+
 .menu-container {
     flex-basis: 20%;
     max-width: 200px;
     box-sizing: border-box;
     padding: 1%;
-
 }
 
 #online-users ul {
-    color: #00d532;
-    list-style-position: inside;
+    padding: 0;
+}
+
+#online-users ul li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 #online-users ul li a {
     text-decoration: none;
-    margin-left: -5px;
 }
 
 /* CHAT */
+
 .chat-container {
     flex-grow: 1;
     width: 96%;
@@ -76,6 +108,7 @@ body, html {
 .header {
     display: flex;
     justify-content: space-between;
+    ;
     align-items: center;
 }
 
@@ -104,17 +137,19 @@ body, html {
     padding: 0;
     box-sizing: border-box;
     font-size: 2.5vh;
-    border: 1px solid saddlebrown;
+    border: 1px solid silver;
     overflow: auto;
 }
 
 .conversation-message {
     display: flex;
-    justify-content: flex-start;   
+    justify-content: flex-start;
 }
+
 .from-sender {
     justify-content: flex-end;
 }
+
 .notification {
     justify-content: center;
 }
@@ -122,11 +157,13 @@ body, html {
 .message {
     padding: 3px 15px;
     margin: 10px;
-    border: 1px solid dodgerblue;    
+    border: 1px solid dodgerblue;
 }
+
 .message-from-sender {
     border: 1px solid orangered;
 }
+
 .message-notification {
     border: none;
     font-style: italic;

@@ -34,7 +34,15 @@ socket.on('newuseronline', function (onlineUsers) {
     $(userList).empty();
     for (var user of onlineUsers) {
         if (user.id != userID) {
-            $(userList).append(`<li onclick="RequestMessenger('${user.id}')" id="user-${user.nickname.replace(/[\s]/g, "")}"><a href="#">${user.nickname}</a></li>`);
+            $(userList).append(
+                `<li id="user-${user.nickname.replace(/[\s]/g, "")}">
+                    <a href="#" onclick="RequestMessenger('${user.id}')">${user.nickname}</a>
+                    <div>
+                    <a href="#"><i class="material-icons small">call</i></a>
+                    <a href="#"><i class="material-icons small">video_call</i></a>
+                    </div>
+                </li>`
+            );
         }
     }
 });
