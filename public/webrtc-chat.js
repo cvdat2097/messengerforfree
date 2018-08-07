@@ -1,12 +1,12 @@
 var socket = io();
 
 messageText = $('#message-text');
-conversatinBox = $('#conversation-box');
+conversationBox = $('#conversation-box');
 userList = $('#online-users ul');
 nicknameText = $('#nickname-text');
 remoteNicknameText = $('#remote-nickname-text');
 
-var nickname = '';
+var nickname = 'Dat';
 var userID = '';
 var RTCConnection;
 var MessagingChannel;
@@ -26,7 +26,7 @@ socket.on('generateuserid', function (newUserID) {
 
 // Notify all people
 socket.on('userjoined', function (nickname) {
-    AppendMessage(`<${nickname}> is online!`);
+    AppendMessage(`${nickname} is online!`, false, true);
 });
 
 // Update online list
@@ -41,7 +41,7 @@ socket.on('newuseronline', function (onlineUsers) {
 
 // Notify all people
 socket.on('userleaved', function (nickname) {
-    AppendMessage(`<${nickname}> disconnected.`);
+    AppendMessage(`${nickname} disconnected.`, false, true);
     nickname = nickname.replace(/[\s]/g, "");
     $(`#user-${nickname}`).remove();
 });
@@ -54,9 +54,10 @@ socket.on('gotmessagingrequest', function (fromUserID) {
 socket.on('connectionestablished', function (chatWithNickname) {
     $(messageText).prop('disabled', false).focus();
     $(remoteNicknameText).text(chatWithNickname);
-})
+});
 
 function RequestMessenger(toUserID) {
+    CloseMessenger();
     console.log(`Start messaging with: ${toUserID}`);
     socket.emit('newmessagingrequest', toUserID, userID);
 
@@ -75,7 +76,7 @@ function RequestMessenger(toUserID) {
     MessagingChannel = RTCConnection.createDataChannel('messaging');
     MessagingChannel.onmessage = function (event) {
         let content = JSON.parse(event.data);
-        AppendMessage(`${content.nickname}: ${content.message}`);
+        AppendMessage(content.message);
     }
 
     RTCConnection.createOffer().then(
@@ -110,7 +111,7 @@ function ResponseMessenger(fromUserID) {
         MessagingChannel = event.channel;
         MessagingChannel.onmessage = function (event) {
             let content = JSON.parse(event.data);
-            AppendMessage(`${content.nickname}: ${content.message}`);
+            AppendMessage(content.message);
         }
     }
 
@@ -126,24 +127,56 @@ function ResponseMessenger(fromUserID) {
     })
 }
 
+function CloseMessenger() {
+    if (MessagingChannel) {
+        MessagingChannel.close();
+    }
+    if (RTCConnection) {
+        RTCConnection.close();
+        RTCConnection = null;
+    }
+
+    $(conversationBox).val('');
+    $(messageText).prop('disabled', true);
+}
+
 function SendMessage(e) {
     if (e.type != 'keydown' || e.key == 'Enter') {
         if (nickname == '') {
             window.alert('Please choose a nickname first');
         } else {
-            let message = $(messageText).val();;
+            let message = $(messageText).val();
             if (message != '' && MessagingChannel) {
+                AppendMessage(message, true);
                 MessagingChannel.send(JSON.stringify({
                     nickname: nickname,
                     message: message
                 }));
-
                 $(messageText).val('').focus();
             }
         }
     }
 }
 
-function AppendMessage(msg) {
-    $(conversatinBox).val($(conversatinBox).val() + msg + '\n');
+function AppendMessage(msg, fromSender = false, isNotification = false) {
+    // $(conversationBox).val($(conversationBox).val() + msg + '\n');
+    if (isNotification) {
+        $(conversationBox).append(
+            `<div class="conversation-message notification">
+            <span class="message message-notification">${msg}</span>
+            </div>`
+        );
+    } else if (fromSender) {
+        $(conversationBox).append(
+            `<div class="conversation-message from-sender">
+            <span class="message message-from-sender">${msg}</span>
+            </div>`
+        );
+    } else {
+        $(conversationBox).append(
+            `<div class="conversation-message">
+            <span class="message">${msg}</span>
+            </div>`
+        );
+    }
 }

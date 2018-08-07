@@ -57,9 +57,8 @@ body, html {
     align-items: center;
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 6vh;
+.header #remote-nickname-text {
+    font-size: 3.5vh;
 }
 
 .nickname-box {
@@ -75,7 +74,7 @@ body, html {
     font-size: 2.3vh
 }
 
-textarea {
+#conversation-box {
     display: block;
     width: 100%;
     height: 97%;
@@ -83,12 +82,40 @@ textarea {
     padding: 0;
     box-sizing: border-box;
     font-size: 2.5vh;
-    box-sizing: border-box;
+    border: 1px solid saddlebrown;
+    overflow: auto;
+}
+
+.conversation-message {
+    display: flex;
+    justify-content: flex-start;   
+}
+.from-sender {
+    justify-content: flex-end;
+}
+.notification {
+    justify-content: center;
+}
+
+.message {
+    padding: 3px 15px;
+    margin: 10px;
+    border: 1px solid dodgerblue;
+}
+.message-from-sender {
+    border: 1px solid orangered;
+}
+.message-notification {
+    border: none;
+    font-style: italic;
+    font-size: 70%;
+    color: #404040;
 }
 
 .chat-box {
     display: flex;
     font-size: 2.4vh;
+    grid-row-start: 3;
 }
 
 #message-text {
