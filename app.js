@@ -62,12 +62,6 @@ io.on('connection', function (socket) {
         onlineSockets[userID].emit('connectionestablished');
     })
 
-    socket.on('sendmessage', function (message, nickname) {
-        socket.to('chatroom').emit('receivemessage', {
-            message: message,
-            nickname: nickname
-        })
-    });
 });
 
 
