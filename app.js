@@ -50,15 +50,21 @@ io.on('connection', function (socket) {
     });
 
     socket.on('seticecandidate', function (toUserID, IceCandidate) {
-        onlineSockets[toUserID].emit('goticecandidate', IceCandidate);
+        if (onlineSockets[toUserID]) {
+            onlineSockets[toUserID].emit('goticecandidate', IceCandidate);
+        }
     });
 
     socket.on('createoffer', function (toUserID, desc) {
-        onlineSockets[toUserID].emit('gotoffer', desc, userID);
+        if (onlineSockets[toUserID]) {
+            onlineSockets[toUserID].emit('gotoffer', desc, userID);
+        }
     });
 
     socket.on('createanswer', function (toUserID, desc) {
-        onlineSockets[toUserID].emit('gotanswer', desc);
+        if (onlineSockets[toUserID]) {
+            onlineSockets[toUserID].emit('gotanswer', desc);
+        }
     });
 
     socket.on('connectionestablished', function (remoteID, userID) {

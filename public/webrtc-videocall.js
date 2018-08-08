@@ -20,7 +20,7 @@ function RequestVideoCall(toUserID) {
     CloseMessenger();
     socket.emit('newvideocallrequest', toUserID, userID);
 
-    VideoRTCConnection = new RTCPeerConnection();
+    VideoRTCConnection = new RTCPeerConnection(rtcConfiguration);
 
     navigator.mediaDevices.getUserMedia({
         video: 1,
@@ -72,7 +72,7 @@ function RequestVideoCall(toUserID) {
 }
 
 function ResponseVideoCall(fromUserID) {
-    VideoRTCConnection = new RTCPeerConnection();
+    VideoRTCConnection = new RTCPeerConnection(rtcConfiguration);
     VideoRTCConnection.onicecandidate = function (event) {
         socket.emit('seticecandidate', fromUserID, event.candidate);
     }

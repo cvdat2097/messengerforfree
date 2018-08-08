@@ -13,6 +13,14 @@ var nickname = '';
 var userID = '';
 var RTCConnection;
 var MessagingChannel;
+var rtcConfiguration = {
+    'iceServers': [
+        {
+            'urls': 'stun:stun.l.google.com:19302'
+        }
+    ]
+}
+
 
 // Ask for nickname
 while (!nickname) {
@@ -73,13 +81,14 @@ socket.on('connectionestablished', function (chatWithNickname) {
 
 function RequestMessenger(toUserID) {
     CloseMessenger();
+
     $(videocallPanel).css('display', 'none');
     $(chatPanel).css('display', 'grid');
 
     console.log(`Start messaging with: ${toUserID}`);
     socket.emit('newmessagingrequest', toUserID, userID);
 
-    RTCConnection = new RTCPeerConnection();
+    RTCConnection = new RTCPeerConnection(rtcConfiguration);
 
     socket.on('goticecandidate', function (candidate) {
         if (candidate) {
@@ -91,29 +100,37 @@ function RequestMessenger(toUserID) {
         socket.emit('seticecandidate', toUserID, event.candidate);
     }
 
+
     MessagingChannel = RTCConnection.createDataChannel('messaging');
     MessagingChannel.onmessage = function (event) {
         let content = JSON.parse(event.data);
         AppendMessage(content.message);
     }
 
+
     RTCConnection.createOffer().then(
         function (desc) {
+            console.log('Cereating offer...');
             RTCConnection.setLocalDescription(desc);
             socket.emit('createoffer', toUserID, desc);
 
             socket.on('gotanswer', function (desc) {
                 if (desc) {
+                    console.log('Got answer')
                     RTCConnection.setRemoteDescription(desc);
                     socket.emit('connectionestablished', toUserID, userID);
                 }
             })
         }
-    );
+    ).catch(function (e) { console.log('ERR !!!!!!!!!!!', e) });
+
 }
 
 function ResponseMessenger(fromUserID) {
-    RTCConnection = new RTCPeerConnection();
+    CloseMessenger();
+
+    RTCConnection = new RTCPeerConnection(rtcConfiguration);
+
     RTCConnection.onicecandidate = function (event) {
         socket.emit('seticecandidate', fromUserID, event.candidate);
     }
@@ -135,26 +152,31 @@ function ResponseMessenger(fromUserID) {
 
     socket.on('gotoffer', function (desc, fromUserID) {
         RTCConnection.setRemoteDescription(desc);
-
+        console.log('Got offer...   ')
         RTCConnection.createAnswer().then(
             function (desc) {
                 RTCConnection.setLocalDescription(desc);
                 socket.emit('createanswer', fromUserID, desc);
             }
         );
-    })
+    });
+
 }
 
 function CloseMessenger() {
     if (MessagingChannel) {
+        console.log('Closing...')
         MessagingChannel.close();
+        MessagingChannel = null;
     }
+
     if (RTCConnection) {
+        console.log('RTC is closing...')
         RTCConnection.close();
         RTCConnection = null;
     }
 
-    $(conversationBox).val('');
+    $(conversationBox).empty();
     $(messageText).prop('disabled', true);
 }
 
@@ -177,7 +199,6 @@ function SendMessage(e) {
 }
 
 function AppendMessage(msg, fromSender = false, isNotification = false) {
-    // $(conversationBox).val($(conversationBox).val() + msg + '\n');
     if (isNotification) {
         $(conversationBox).append(
             `<div class="conversation-message notification">
