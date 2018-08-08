@@ -14,8 +14,9 @@ remoteNicknameText = $('.remote-nickname-text');
 var nickname = '';
 var userID = '';
 // Ask for nickname
-while (!nickname) {
-    nickname = prompt('What is your name?', 'MHX');
+nickname = prompt('What is your name?', 'MHX');
+if (!nickname) {
+    nickname = 'Tester';
 }
 $(nicknameText).append(`Hello, <b><i>${nickname}</i></b>.`);
 
@@ -67,7 +68,7 @@ peer.on('connection', function (conn) {
         // Receive data
         AppendMessage(data.message);
     });
-    
+
     $(messageText).prop('disabled', false).focus();
     $(remoteNicknameText).text(peerConnection.peer);
 });
@@ -81,7 +82,7 @@ function RequestMessenger(toUserID) {
             // Receive data
             AppendMessage(data.message);
         });
-        
+
         console.log('Connection ID: ' + peerConnection.id);
 
         $(messageText).prop('disabled', false).focus();
@@ -89,7 +90,6 @@ function RequestMessenger(toUserID) {
         console.log('Success')
     });
 }
-
 
 function SendMessage(e) {
     if (e.type != 'keydown' || e.key == 'Enter') {
