@@ -15,11 +15,10 @@ io.on('connection', function (socket) {
     console.log('a user connected');
     socket.join('chatroom');
 
-    var userID = helper.GenerateID();
-    socket.emit('generateuserid', userID);
-
-    socket.on('enternickname', function (nickname) {
-        socket.to('chatroom').emit('userjoined', nickname);
+    var userID;
+    socket.on('infoGenerated', function (nickname, id) {
+        socket.to('chatroom').emit('userJoined', nickname);
+        userID = id;
 
         onlineUsers.push({
             id: userID,
@@ -27,53 +26,15 @@ io.on('connection', function (socket) {
         });
         onlineSockets[userID] = socket;
 
-        io.in('chatroom').emit('newuseronline', onlineUsers);
+        io.in('chatroom').emit('newUserOnline', onlineUsers);
 
         socket.on('disconnect', function () {
             console.log('user disconnected');
             onlineUsers = onlineUsers.filter(function (user) {
                 return user.id != userID;
             });
-            socket.to('chatroom').emit('userleaved', nickname);
+            socket.to('chatroom').emit('userLeaved', nickname);
         });
-    });
-
-    socket.on('newmessagingrequest', function (toUserID, fromUserID) {
-        if (onlineSockets[toUserID]) {
-            onlineSockets[toUserID].emit('gotmessagingrequest', fromUserID);
-        }
-    });
-    socket.on('newvideocallrequest', function (toUserID, fromUserID) {
-        if (onlineSockets[toUserID]) {
-            onlineSockets[toUserID].emit('gotvideocallrequest', fromUserID);
-        }
-    });
-
-    socket.on('seticecandidate', function (toUserID, IceCandidate) {
-        if (onlineSockets[toUserID]) {
-            onlineSockets[toUserID].emit('goticecandidate', IceCandidate);
-        }
-    });
-
-    socket.on('createoffer', function (toUserID, desc) {
-        if (onlineSockets[toUserID]) {
-            onlineSockets[toUserID].emit('gotoffer', desc, userID);
-        }
-    });
-
-    socket.on('createanswer', function (toUserID, desc) {
-        if (onlineSockets[toUserID]) {
-            onlineSockets[toUserID].emit('gotanswer', desc);
-        }
-    });
-
-    socket.on('connectionestablished', function (remoteID, userID) {
-        onlineSockets[remoteID].emit('connectionestablished', onlineUsers
-            .filter(function (user) { return user.id == userID; })[0]
-            .nickname);
-        onlineSockets[userID].emit('connectionestablished', onlineUsers
-            .filter(function (user) { return user.id == remoteID; })[0]
-            .nickname);
     });
 });
 
