@@ -13,10 +13,12 @@ app.use(express.static('public'));
 
 io.on('connection', function (socket) {
     console.log('a user connected');
+    
     socket.join('chatroom');
 
     var userID;
     socket.on('infoGenerated', function (nickname, id) {
+        console.log('Got info of new user');
         socket.to('chatroom').emit('userJoined', nickname);
         userID = id;
 
@@ -26,6 +28,7 @@ io.on('connection', function (socket) {
         });
         onlineSockets[userID] = socket;
 
+        console.log('Send onlineUsers')
         io.in('chatroom').emit('newUserOnline', onlineUsers);
 
         socket.on('disconnect', function () {
