@@ -19,7 +19,6 @@ io.on('connection', function (socket) {
     var userID;
     socket.on('infoGenerated', function (nickname, id) {
         console.log('Got info of new user');
-        socket.to('chatroom').emit('userJoined', nickname);
         userID = id;
 
         onlineUsers.push({
@@ -36,7 +35,7 @@ io.on('connection', function (socket) {
             onlineUsers = onlineUsers.filter(function (user) {
                 return user.id != userID;
             });
-            socket.to('chatroom').emit('userLeaved', nickname);
+            socket.to('chatroom').emit('userLeaved', nickname, onlineUsers);
         });
     });
 });
